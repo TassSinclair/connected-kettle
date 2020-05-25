@@ -12,7 +12,9 @@ public:
     unsigned contrast);
 
    void begin();
+   void clear();
    void printLoad(float load);
+   void printTemperature(float temperature);
    void print(const char *line1, const char *line2);
    
 private:

@@ -31,6 +31,7 @@ void Comms::begin()
       delay(5000);
     }
   }
+  _pubSubClient.subscribe(_activate_topic);
 }
 
 void Comms::loop()
@@ -51,4 +52,24 @@ void Comms::publishLoad(float load)
       String(load, 2).c_str(),
       true);
   }
+}
+
+void Comms::publishTemperature(float temperature)
+{
+  if (_last_temperature_publish + _min_delay < millis() &&
+      (temperature > _last_temperature_value + _min_temperature_delta ||
+       temperature < _last_temperature_value - _min_temperature_delta))
+  {
+    _last_temperature_publish = millis();
+    _last_temperature_value = temperature;
+    _pubSubClient.publish(
+      _temperature_topic,
+      String(temperature, 2).c_str(),
+      true);
+  }
+}
+
+void Comms::setCallback(MQTT_CALLBACK_SIGNATURE)
+{
+  _pubSubClient.setCallback(callback);
 }

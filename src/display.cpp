@@ -6,15 +6,19 @@
 Display::Display(
     LiquidCrystal lcd, 
     unsigned contrastPin,
-    unsigned contrast) : _lcd(lcd)
+    unsigned contrast) : _lcd(lcd), _contrastPin(contrastPin), _contrast(contrast)
 {
-    _contrastPin = contrastPin;
-    _contrast = contrast;
 }
 
 
 void Display::begin()
 {
+    pinMode(_contrastPin, OUTPUT);
+    analogWrite(_contrastPin, _contrast, 255);
+
+    _lcd.backlight();
+    _lcd.setBacklight(128);
+    _lcd.begin(16,2);
     _lcd.createChar (0, left_top);    
     _lcd.createChar (1, left_bottom); 
     _lcd.createChar (2, right_top);   
@@ -23,24 +27,31 @@ void Display::begin()
     _lcd.createChar (5, some);
     _lcd.createChar (6, more);
     _lcd.createChar (7, most);
-    pinMode(_contrastPin, OUTPUT);
-    analogWrite(_contrastPin, _contrast, 255);
-
-    _lcd.backlight();
-    _lcd.setBacklight(128);
-    _lcd.begin(16,2);
 }
-void Display::printLoad(float load)
+
+void Display::clear()
 {
     _lcd.clear();
-    _lcd.setCursor ( 4, 0 );
-    _lcd.print("Load: ");  
-    _lcd.setCursor ( 4, 1 );        // go to the next line
-    _lcd.print (load, 2);
-    _lcd.print(" kg");
+}
+
+void Display::printLoad(float load)
+{
+    _lcd.setCursor (4, 1);
+    _lcd.print("Load: ");
+    _lcd.print(load, 2);
+    _lcd.print("kg");
 
     printKettle();
     printKettleFilling(load);
+}
+
+void Display::printTemperature(float temperature)
+{
+    _lcd.setCursor(4, 0);
+    _lcd.print("Temp: ");
+    _lcd.print(temperature, 0);
+    _lcd.print((char)223);
+    _lcd.print("C");
 }
 
 void Display::print(const char *line1, const char *line2)
@@ -49,7 +60,7 @@ void Display::print(const char *line1, const char *line2)
     _lcd.setCursor (0, 0);
     _lcd.print(line1);
     _lcd.setCursor (0, 1);
-    _lcd.print(line1);
+    _lcd.print(line2);
 }
 
 void Display::printKettle()
