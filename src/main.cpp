@@ -67,7 +67,8 @@ void callback(const char *topic, byte *payload, unsigned int length)
   {
       servo.write(30);
       delay(200);
-      servo.write(70);
+      servo.write(77);
+      delay(200);
   }
 }
 
@@ -82,7 +83,7 @@ void setup()
   comms.setCallback(callback);
   display.print("Setting up scale", "");
   scale.begin();
-
+  display.print("Setting up servo ", "");
   servo.attach(
         SERVO_PIN,
         2
@@ -104,7 +105,10 @@ void loop()
 
   display.clear();
   display.printLoad(load);
-  display.printTemperature(temperature);
   comms.publishLoad(load);
+  if (temperature > 0)
+  {
+    display.printTemperature(temperature);
+  }
   comms.publishTemperature(temperature);
 }
