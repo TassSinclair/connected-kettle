@@ -11,7 +11,7 @@ public:
       const int SCK_PIN
       );
 
-   void begin();
+   void connect();
    float read();
    
 private:

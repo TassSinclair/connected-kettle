@@ -3,6 +3,8 @@
 
 #include <LiquidCrystal.h>
 #include <inttypes.h>
+#include <analogWrite.h>
+#include <Wire.h>
 
 class Display
 {
@@ -11,8 +13,9 @@ public:
     unsigned contrastPin,
     unsigned contrast);
 
-   void begin();
+   void connect();
    void clear();
+   void setBacklight(bool on);
    void printLoad(float load);
    void printTemperature(float temperature);
    void print(const char *line1, const char *line2);

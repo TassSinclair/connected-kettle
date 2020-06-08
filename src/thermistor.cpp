@@ -1,7 +1,5 @@
 #include "thermistor.h"
 
-#include <Arduino.h>
-
 Thermistor::Thermistor(const int thermistor_pin): _thermistor_pin(thermistor_pin)
 {
 };

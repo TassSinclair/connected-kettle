@@ -7,7 +7,7 @@ Scale::Scale(
 
 }
 
-void Scale::begin()
+void Scale::connect()
 {
     _loadcell.begin(_dout_pin, _sck_pin);
     _loadcell.set_scale(LOADCELL_DIVIDER); //Adjust to this calibration factor

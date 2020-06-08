@@ -1,7 +1,4 @@
-#include <LiquidCrystal.h>
 #include "display.h"
-
-#include <analogWrite.h>
 
 Display::Display(
     LiquidCrystal lcd, 
@@ -11,13 +8,12 @@ Display::Display(
 }
 
 
-void Display::begin()
+void Display::connect()
 {
     pinMode(_contrastPin, OUTPUT);
     analogWrite(_contrastPin, _contrast, 255);
 
-    _lcd.backlight();
-    _lcd.setBacklight(128);
+    setBacklight(true);
     _lcd.begin(16,2);
     _lcd.createChar (0, left_top);    
     _lcd.createChar (1, left_bottom); 
@@ -32,6 +28,11 @@ void Display::begin()
 void Display::clear()
 {
     _lcd.clear();
+}
+
+void Display::setBacklight(bool on)
+{
+    _lcd.setBacklight(on ? 128 : 0);
 }
 
 void Display::printLoad(float load)

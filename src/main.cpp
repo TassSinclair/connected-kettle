@@ -1,12 +1,10 @@
 #include <Servo.h>
-#include <WiFi.h>
-#include <Wire.h>
 
 #include <display.h>
 #include <comms.h>
 #include <scale.h>
+#include <networking.h>
 #include <thermistor.h>
-#include <Arduino.h>
 #include "secrets.h"
 #include <PubSubClient.h>
 
@@ -31,10 +29,10 @@ Display display(
   CONTRAST
 );
 
-WiFiClient espClient;
+Networking networking(wifi_ssid, wifi_password);
 
 Comms comms(
-  PubSubClient(espClient),
+  PubSubClient(networking.getClient()),
   mqtt_server
   );
 
@@ -42,57 +40,39 @@ const int DOUT_PIN = 22;
 const int SCK_PIN = 23;
 Scale scale(DOUT_PIN, SCK_PIN);
 
-void start_wifi()
-{
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(wifi_ssid, wifi_password);
-  Serial.print("WiFi connecting: ");
-  Serial.println(wifi_ssid);
-
-  while (WiFi.status() != WL_CONNECTED)
-  {
-    delay(500);
-    Serial.print(".");
-  }
-
-  Serial.println("");
-  Serial.println("WiFi connected");
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
-}
-
 void callback(const char *topic, byte *payload, unsigned int length)
 {
-  if (strcmp(topic, "smart-kettle/activate") == 0)
+  if (strcmp(topic, Comms::ACTIVATE_TOPIC) == 0)
   {
-      servo.write(30);
-      delay(200);
-      servo.write(77);
-      delay(200);
+    servo.attach(
+      SERVO_PIN,
+      2
+    );
+    servo.write(25);
+    delay(200);
+    servo.write(75);
+    delay(200);
+    servo.detach();
   }
 }
 
 void setup()
 {
   Serial.begin(460800);
-  display.begin();
+  display.connect();
   display.print("Setting up wifi", mqtt_server);
-  start_wifi();
+  networking.connect();
   display.print("Setting up comms", mqtt_server);
-  comms.begin();
+  comms.connect();
   comms.setCallback(callback);
   display.print("Setting up scale", "");
-  scale.begin();
-  display.print("Setting up servo ", "");
-  servo.attach(
-        SERVO_PIN,
-        2
-    );
+  scale.connect();
   display.clear();
 }
 
 void loop()
 {
+  networking.loop();
   comms.loop();
 
   float load = scale.read();
@@ -104,11 +84,17 @@ void loop()
   Serial.println(temperature, 2);
 
   display.clear();
-  display.printLoad(load);
-  comms.publishLoad(load);
-  if (temperature > 0)
-  {
+
+  if (temperature > 0) {
+    comms.publishAvailability(true);
+    display.setBacklight(true);
+    display.printLoad(load);
     display.printTemperature(temperature);
+
+    comms.publishLoad(load);
+    comms.publishTemperature(temperature);
+  } else {
+    comms.publishAvailability(false);
+    display.setBacklight(false);
   }
-  comms.publishTemperature(temperature);
 }

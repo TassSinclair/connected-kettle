@@ -1,5 +1,6 @@
-#include <PubSubClient.h>
 #include "comms.h"
+
+const char *Comms::ACTIVATE_TOPIC = "smart-kettle/activate";
 
 Comms::Comms(
    PubSubClient pubSubClient,
@@ -12,14 +13,14 @@ Comms::Comms(
 }
 
 
-void Comms::begin()
+void Comms::connect()
 {
-  _pubSubClient.setServer(_mqtt_server, 1883);
   while (!_pubSubClient.connected())
   {
+    _pubSubClient.setServer(_mqtt_server, 1883);
     Serial.print("MQTT connecting: ");
     Serial.println(_mqtt_server);
-    if (_pubSubClient.connect(_mqtt_client))
+    if (_pubSubClient.connect(_mqtt_client, _status_topic, 1, true, _unavailable))
     {
       Serial.println("MQTT connected");
     }
@@ -31,12 +32,31 @@ void Comms::begin()
       delay(5000);
     }
   }
-  _pubSubClient.subscribe(_activate_topic);
+  _pubSubClient.subscribe(ACTIVATE_TOPIC);
+  _last_availability = true;
+  _pubSubClient.publish(_status_topic, _available, true);
 }
 
 void Comms::loop()
 {
+  if (!_pubSubClient.connected())
+  {
+    connect();
+  }
   _pubSubClient.loop();
+}
+
+void Comms::publishAvailability(boolean available)
+{
+  if (available != _last_availability)
+  {
+    _pubSubClient.publish(
+      _status_topic,
+      available ? _available : _unavailable,
+      true
+    );
+    _last_availability = available;
+  }
 }
 
 void Comms::publishLoad(float load)
@@ -48,7 +68,7 @@ void Comms::publishLoad(float load)
     _last_load_publish = millis();
     _last_load_value = load;
     _pubSubClient.publish(
-      _load_topic,
+      _load_value_topic,
       String(load, 2).c_str(),
       true);
   }
@@ -63,7 +83,7 @@ void Comms::publishTemperature(float temperature)
     _last_temperature_publish = millis();
     _last_temperature_value = temperature;
     _pubSubClient.publish(
-      _temperature_topic,
+      _temperature_value_topic,
       String(temperature, 2).c_str(),
       true);
   }

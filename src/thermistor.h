@@ -1,6 +1,8 @@
 #ifndef smart_kettle_thermistor_h
 #define smart_kettle_thermistor_h
 
+#include <Arduino.h>
+
 class Thermistor
 {
 public:
