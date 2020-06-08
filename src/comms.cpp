@@ -1,13 +1,18 @@
 #include "comms.h"
 
 const char *Comms::ACTIVATE_TOPIC = "smart-kettle/activate";
+const char *Comms::_AVAILABLE = "available";
+const char *Comms::_UNAVAILABLE = "unavailable";
+const char *Comms::_MQTT_CLIENT = "smart-kettle";
+const char *Comms::_TEMPERATURE_VALUE_TOPIC = "smart-kettle/temperature-value";
+const char *Comms::_LOAD_VALUE_TOPIC = "smart-kettle/load-value";
+const char *Comms::_STATUS_TOPIC = "smart-kettle/status";
 
 Comms::Comms(
    PubSubClient pubSubClient,
    const char* mqtt_server
-   ): _pubSubClient(pubSubClient)
+   ): _pubSubClient(pubSubClient), _mqtt_server(mqtt_server)
 {
-   _mqtt_server = mqtt_server;
    _last_load_value = -1;
    _last_load_publish = 0;
 }
@@ -20,7 +25,12 @@ void Comms::connect()
     _pubSubClient.setServer(_mqtt_server, 1883);
     Serial.print("MQTT connecting: ");
     Serial.println(_mqtt_server);
-    if (_pubSubClient.connect(_mqtt_client, _status_topic, 1, true, _unavailable))
+    if (_pubSubClient.connect(
+      _MQTT_CLIENT,
+      _STATUS_TOPIC,
+      1,
+      true,
+      _UNAVAILABLE))
     {
       Serial.println("MQTT connected");
     }
@@ -33,8 +43,8 @@ void Comms::connect()
     }
   }
   _pubSubClient.subscribe(ACTIVATE_TOPIC);
-  _last_availability = true;
-  _pubSubClient.publish(_status_topic, _available, true);
+  _last_availability = false;
+  publishAvailability(true);
 }
 
 void Comms::loop()
@@ -51,8 +61,8 @@ void Comms::publishAvailability(boolean available)
   if (available != _last_availability)
   {
     _pubSubClient.publish(
-      _status_topic,
-      available ? _available : _unavailable,
+      _STATUS_TOPIC,
+      available ? _AVAILABLE : _UNAVAILABLE,
       true
     );
     _last_availability = available;
@@ -68,7 +78,7 @@ void Comms::publishLoad(float load)
     _last_load_publish = millis();
     _last_load_value = load;
     _pubSubClient.publish(
-      _load_value_topic,
+      _LOAD_VALUE_TOPIC,
       String(load, 2).c_str(),
       true);
   }
@@ -83,7 +93,7 @@ void Comms::publishTemperature(float temperature)
     _last_temperature_publish = millis();
     _last_temperature_value = temperature;
     _pubSubClient.publish(
-      _temperature_value_topic,
+      _TEMPERATURE_VALUE_TOPIC,
       String(temperature, 2).c_str(),
       true);
   }

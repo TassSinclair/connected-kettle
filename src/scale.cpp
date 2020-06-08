@@ -3,8 +3,8 @@
 Scale::Scale(
     const int dout_pin,
     const int sck_pin
-) : _dout_pin(dout_pin), _sck_pin(sck_pin) {
-
+) : _dout_pin(dout_pin), _sck_pin(sck_pin)
+{
 }
 
 void Scale::connect()

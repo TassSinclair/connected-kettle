@@ -22,19 +22,19 @@ private:
    PubSubClient _pubSubClient;
    bool _last_availability;
    const char *_mqtt_server;
-   const unsigned long _min_delay = 10000;
-   const float _min_load_delta = 0.05f;
+   static const unsigned long _min_delay = 10000;
+   static const float _min_load_delta = 0.05f;
    float _last_load_value;
-   const float _min_temperature_delta = 1.0f;
+   static const float _min_temperature_delta = 1.0f;
    float _last_temperature_value;
    unsigned long _last_temperature_publish;
    unsigned long _last_load_publish;
-   const char *_available = "available";
-   const char *_unavailable = "unavailable";
-   const char *_mqtt_client = "smart-kettle";
-   const char *_temperature_value_topic = "smart-kettle/temperature-value";
-   const char *_load_value_topic = "smart-kettle/load-value";
-   const char *_status_topic = "smart-kettle/status";
+   static const char *_AVAILABLE;
+   static const char *_UNAVAILABLE;
+   static const char *_MQTT_CLIENT;
+   static const char *_TEMPERATURE_VALUE_TOPIC;
+   static const char *_LOAD_VALUE_TOPIC;
+   static const char *_STATUS_TOPIC;
 };
 
 #endif
