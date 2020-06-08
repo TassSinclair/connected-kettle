@@ -7,6 +7,8 @@ const char *Comms::_MQTT_CLIENT = "smart-kettle";
 const char *Comms::_TEMPERATURE_VALUE_TOPIC = "smart-kettle/temperature-value";
 const char *Comms::_LOAD_VALUE_TOPIC = "smart-kettle/load-value";
 const char *Comms::_STATUS_TOPIC = "smart-kettle/status";
+const float Comms::_MIN_LOAD_DELTA = 0.05f;
+const float Comms::_MIN_TEMPERATURE_DELTA = 1.0f;
 
 Comms::Comms(
    PubSubClient pubSubClient,
@@ -71,9 +73,9 @@ void Comms::publishAvailability(boolean available)
 
 void Comms::publishLoad(float load)
 {
-  if (_last_load_publish + _min_delay < millis() &&
-      (load > _last_load_value + _min_load_delta ||
-       load < _last_load_value - _min_load_delta))
+  if (_last_load_publish + _MIN_DELAY < millis() &&
+      (load > _last_load_value + _MIN_LOAD_DELTA ||
+       load < _last_load_value - _MIN_LOAD_DELTA))
   {
     _last_load_publish = millis();
     _last_load_value = load;
@@ -86,9 +88,9 @@ void Comms::publishLoad(float load)
 
 void Comms::publishTemperature(float temperature)
 {
-  if (_last_temperature_publish + _min_delay < millis() &&
-      (temperature > _last_temperature_value + _min_temperature_delta ||
-       temperature < _last_temperature_value - _min_temperature_delta))
+  if (_last_temperature_publish + _MIN_DELAY < millis() &&
+      (temperature > _last_temperature_value + _MIN_TEMPERATURE_DELTA ||
+       temperature < _last_temperature_value - _MIN_TEMPERATURE_DELTA))
   {
     _last_temperature_publish = millis();
     _last_temperature_value = temperature;

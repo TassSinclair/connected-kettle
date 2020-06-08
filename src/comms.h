@@ -22,10 +22,10 @@ private:
    PubSubClient _pubSubClient;
    bool _last_availability;
    const char *_mqtt_server;
-   static const unsigned long _min_delay = 10000;
-   static const float _min_load_delta = 0.05f;
+   static const unsigned long _MIN_DELAY = 10000;
+   static const float _MIN_LOAD_DELTA;
+   static const float _MIN_TEMPERATURE_DELTA;
    float _last_load_value;
-   static const float _min_temperature_delta = 1.0f;
    float _last_temperature_value;
    unsigned long _last_temperature_publish;
    unsigned long _last_load_publish;
