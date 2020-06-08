@@ -16,8 +16,11 @@ public:
    
 private:
    HX711 _loadcell;
-   const long LOADCELL_DIVIDER = -1100000;
-   const long LOADCELL_OFFSET = 38821;
+   static const long LOADCELL_DIVIDER = -1100000;
+   // scale tray
+   // static const long LOADCELL_OFFSET = 38821;
+   // scale tray + kettle base + kettle
+   static const long LOADCELL_OFFSET = -1065951;
    const int _dout_pin;
    const int _sck_pin;
 };
