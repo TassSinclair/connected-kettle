@@ -1,5 +1,5 @@
-#ifndef smart_kettle_scale_h
-#define smart_kettle_scale_h
+#ifndef connected_kettle_scale_h
+#define connected_kettle_scale_h
 
 #include "HX711.h"
 
@@ -16,9 +16,9 @@ public:
    
 private:
    HX711 _loadcell;
-   static const long LOADCELL_DIVIDER = -1100000;
-   // static const long LOADCELL_OFFSET = 38821; // scale tray
-   static const long LOADCELL_OFFSET = -1065951; // scale tray + kettle base + kettle
+   static const long _LOADCELL_SCALE = -1100000;
+   // static const long _LOADCELL_OFFSET = 38821; // scale tray
+   static const long _LOADCELL_OFFSET = -1065951; // scale tray + kettle base + kettle
    const int _dout_pin;
    const int _sck_pin;
 };

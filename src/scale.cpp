@@ -10,8 +10,8 @@ Scale::Scale(
 void Scale::connect()
 {
     _loadcell.begin(_dout_pin, _sck_pin);
-    _loadcell.set_scale(LOADCELL_DIVIDER);
-    _loadcell.set_offset(LOADCELL_OFFSET);
+    _loadcell.set_scale(_LOADCELL_SCALE);
+    _loadcell.set_offset(_LOADCELL_OFFSET);
 }
 
 inline float max(float a, float b) { return a > b ? a : b; }

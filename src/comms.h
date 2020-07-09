@@ -1,5 +1,5 @@
-#ifndef smart_kettle_comms_h
-#define smart_kettle_comms_h
+#ifndef connected_kettle_comms_h
+#define connected_kettle_comms_h
 
 #include <PubSubClient.h>
 
@@ -16,7 +16,7 @@ public:
    void publishLoad(float load);
    void publishTemperature(float load);
    void setCallback(MQTT_CALLBACK_SIGNATURE);
-   static const char *ACTIVATE_TOPIC;
+   static const char *POST_BOILING_TOPIC;
 
 private:
    PubSubClient _pubSubClient;
@@ -29,12 +29,12 @@ private:
    float _last_temperature_value;
    unsigned long _last_temperature_publish;
    unsigned long _last_load_publish;
-   static const char *_AVAILABLE;
-   static const char *_UNAVAILABLE;
+   static const char *_STATUS_AVAILABLE;
+   static const char *_STATUS_UNAVAILABLE;
    static const char *_MQTT_CLIENT;
-   static const char *_TEMPERATURE_VALUE_TOPIC;
-   static const char *_LOAD_VALUE_TOPIC;
-   static const char *_STATUS_TOPIC;
+   static const char *_GET_TEMPERATURE_TOPIC;
+   static const char *_GET_LOAD_TOPIC;
+   static const char *_GET_STATUS_TOPIC;
 };
 
 #endif

@@ -1,5 +1,5 @@
-#ifndef smart_kettle_display_h
-#define smart_kettle_display_h
+#ifndef connected_kettle_display_h
+#define connected_kettle_display_h
 
 #include <LiquidCrystal.h>
 #include <inttypes.h>
@@ -10,111 +10,33 @@ class Display
 {
 public:
    Display(LiquidCrystal lcd, 
-    unsigned contrastPin,
+    unsigned contrast_pin,
     unsigned contrast);
 
    void connect();
    void clear();
-   void setBacklight(bool on);
-   void printLoad(float load);
-   void printTemperature(float temperature);
-   void print(const char *line1, const char *line2);
+   void set_backlight(bool on);
+   void print_load(float load);
+   void print_temperature(float temperature);
+   void print(const char *line_1, const char *line_2);
    
 private:
    LiquidCrystal _lcd;
-   unsigned _contrastPin;
+   unsigned _contrast_pin;
    unsigned _contrast;
-   byte left_top[8] = {
-      0b00000,
-      0b00001,
-      0b00010,
-      0b11110,
-      0b01110,
-      0b00110,
-      0b00010,
-      0b00010
-   };
 
-   byte left_bottom[8] = {
-      0b00010,
-      0b00010,
-      0b00010,
-      0b00010,
-      0b00010,
-      0b00010,
-      0b00110,
-      0b01111
-   };
+   static byte _KETTLE_LEFT_TOP[];
+   static byte _KETTLE_LEFT_BOTTOM[];
+   static byte _KETTLE_RIGHT_TOP[];
+   static byte _KETTLE_RIGHT_BOTTOM[];
 
-   byte right_top[8] = {
-      0b00000,
-      0b10000,
-      0b01000,
-      0b01100,
-      0b01110,
-      0b01011,
-      0b01011,
-      0b01011
-   };
+   static byte _KETTLE_FILL_NONE[];
+   static byte _KETTLE_FILL_SOME[];
+   static byte _KETTLE_FILL_MORE[];
+   static byte _KETTLE_FILL_MOST[];
 
-   byte right_bottom[8] = {
-      0b01011,
-      0b01011,
-      0b01011,
-      0b01111,
-      0b01110,
-      0b0100,
-      0b01100,
-      0b11110
-   };
-
-   byte none[8] = {
-      0b00000,
-      0b00000,
-      0b00000,
-      0b00000,
-      0b00000,
-      0b00000,
-      0b00000,
-      0b11111,
-   };
-
-
-   byte some[8] = {
-      0b00000,
-      0b00000,
-      0b00000,
-      0b00000,
-      0b00000,
-      0b01010,
-      0b11111,
-      0b11111,
-   };
-
-   byte more[8] = {
-      0b00000,
-      0b00000,
-      0b00000,
-      0b01010,
-      0b11111,
-      0b11111,
-      0b11111,
-      0b11111,
-   };
-
-   byte most[8] = {
-      0b00000,
-      0b01010,
-      0b11111,
-      0b11111,
-      0b11111,
-      0b11111,
-      0b11111,
-      0b11111,
-   };
-
-   void printKettle();
-   void printKettleFilling(float load);
+   void print_kettle();
+   void print_kettle_filling(float load);
 };
 
 #endif

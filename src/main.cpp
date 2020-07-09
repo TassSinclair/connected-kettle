@@ -29,7 +29,7 @@ Display display(
   CONTRAST
 );
 
-Networking networking(wifi_ssid, wifi_password);
+Networking networking(wifi_ssid, wifi_password, "connected-kettle");
 
 Comms comms(
   PubSubClient(networking.getClient()),
@@ -42,7 +42,7 @@ Scale scale(DOUT_PIN, SCK_PIN);
 
 void callback(const char *topic, byte *payload, unsigned int length)
 {
-  if (strcmp(topic, Comms::ACTIVATE_TOPIC) == 0)
+  if (strcmp(topic, Comms::POST_BOILING_TOPIC) == 0)
   {
     servo.attach(
       SERVO_PIN,
@@ -87,14 +87,14 @@ void loop()
 
   if (temperature > 0) {
     comms.publishAvailability(true);
-    display.setBacklight(true);
-    display.printLoad(load);
-    display.printTemperature(temperature);
+    display.set_backlight(true);
+    display.print_load(load);
+    display.print_temperature(temperature);
 
     comms.publishLoad(load);
     comms.publishTemperature(temperature);
   } else {
     comms.publishAvailability(false);
-    display.setBacklight(false);
+    display.set_backlight(false);
   }
 }
