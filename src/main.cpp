@@ -23,6 +23,7 @@ const int D7 = 21;
 const int BACKLIGHT_PIN = 13;
 const int CONTRAST_PIN = 27;
 const int CONTRAST = 110;
+
 Display display(
   LiquidCrystal(RS, EN, D4, D5, D6, D7, BACKLIGHT_PIN, POSITIVE),
   CONTRAST_PIN,
@@ -44,6 +45,7 @@ void callback(const char *topic, byte *payload, unsigned int length)
 {
   if (strcmp(topic, Comms::POST_BOILING_TOPIC) == 0)
   {
+    display.set_backlight(false);
     servo.attach(
       SERVO_PIN,
       2
@@ -53,6 +55,7 @@ void callback(const char *topic, byte *payload, unsigned int length)
     servo.write(75);
     delay(200);
     servo.detach();
+    display.set_backlight(true);
   }
 }
 
