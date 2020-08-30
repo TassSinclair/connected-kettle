@@ -56,7 +56,7 @@ void Comms::loop()
   _pubSubClient.loop();
 }
 
-void Comms::publishAvailability(boolean available)
+void Comms::publishAvailability(bool available)
 {
   if (available != _last_availability)
   {
@@ -83,11 +83,11 @@ void Comms::publishLoad(float load)
   }
 }
 
-void Comms::publishBoiling()
+void Comms::publishBoiling(bool boiling)
 {
   _pubSubClient.publish(
     _GET_BOILING_TOPIC,
-    "true");
+    boiling ? "true" : "false");
 }
 
 void Comms::publishTemperature(float temperature)

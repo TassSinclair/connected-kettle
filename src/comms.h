@@ -12,8 +12,8 @@ public:
 
    void connect();
    void loop();
-   void publishAvailability(boolean available);
-   void publishBoiling();
+   void publishAvailability(bool available);
+   void publishBoiling(bool boiling);
    void publishLoad(float load);
    void publishTemperature(float load);
    void setCallback(MQTT_CALLBACK_SIGNATURE);

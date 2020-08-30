@@ -42,15 +42,20 @@ Scale scale(DOUT_PIN, SCK_PIN);
 
 void callback(const char *topic, byte *payload, unsigned int length)
 {
-  display.set_backlight(false);
-  servo.attach(SERVO_PIN);
-  servo.write(25);
-  delay(200);
-  servo.write(75);
-  delay(200);
-  servo.detach();
-  comms.publishBoiling();
-  display.set_backlight(true);
+  if (scale.read() > 0.2)
+  {
+    display.set_backlight(false);
+    servo.attach(SERVO_PIN);
+    servo.write(25);
+    delay(200);
+    servo.write(75);
+    delay(200);
+    servo.detach();
+    display.set_backlight(true);
+    comms.publishBoiling(true);
+  } else {
+    comms.publishBoiling(false);
+  }
 }
 
 void setup()
