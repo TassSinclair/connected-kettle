@@ -1,23 +1,21 @@
 #include "comms.h"
 
-const char *Comms::POST_BOILING_TOPIC = "connected-kettle/post/boiling";
+const char *Comms::_POST_BOILING_TOPIC = "connected-kettle/post/boiling";
 const char *Comms::_STATUS_AVAILABLE = "available";
 const char *Comms::_STATUS_UNAVAILABLE = "unavailable";
 const char *Comms::_MQTT_CLIENT = "connected-kettle";
 const char *Comms::_GET_TEMPERATURE_TOPIC = "connected-kettle/get/temperature";
 const char *Comms::_GET_LOAD_TOPIC = "connected-kettle/get/load";
 const char *Comms::_GET_STATUS_TOPIC = "connected-kettle/get/status";
+const char *Comms::_GET_BOILING_TOPIC = "connected-kettle/get/boiling";
 const float Comms::_MIN_LOAD_DELTA = 0.05f;
 const float Comms::_MIN_TEMPERATURE_DELTA = 1.0f;
 
-Comms::Comms(
-   PubSubClient pubSubClient,
-   const char* mqtt_server
-   ): _pubSubClient(pubSubClient), _mqtt_server(mqtt_server)
-{
-   _last_load_value = -1;
-   _last_load_publish = 0;
-}
+Comms::Comms(Client& networkClient, const char* mqtt_server):
+  _pubSubClient(PubSubClient(networkClient)),
+  _mqtt_server(mqtt_server),
+  _last_load_value(-1),
+  _last_load_publish(0) {}
 
 
 void Comms::connect()
@@ -44,7 +42,7 @@ void Comms::connect()
       delay(5000);
     }
   }
-  _pubSubClient.subscribe(POST_BOILING_TOPIC);
+  _pubSubClient.subscribe(_POST_BOILING_TOPIC);
   _last_availability = false;
   publishAvailability(true);
 }
@@ -83,6 +81,13 @@ void Comms::publishLoad(float load)
       _GET_LOAD_TOPIC,
       String(load, 2).c_str());
   }
+}
+
+void Comms::publishBoiling()
+{
+  _pubSubClient.publish(
+    _GET_BOILING_TOPIC,
+    "true");
 }
 
 void Comms::publishTemperature(float temperature)

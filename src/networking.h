@@ -1,7 +1,7 @@
 #ifndef connected_kettle_networking_h
 #define connected_kettle_networking_h
 
-#include <WiFi.h>
+#include "WiFi.h"
 
 class Networking
 {

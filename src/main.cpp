@@ -1,12 +1,11 @@
-#include <Servo.h>
+#include "Servo.h"
 
-#include <display.h>
-#include <comms.h>
-#include <scale.h>
-#include <networking.h>
-#include <thermistor.h>
+#include "display.h"
+#include "comms.h"
+#include "scale.h"
+#include "networking.h"
+#include "thermistor.h"
 #include "secrets.h"
-#include <PubSubClient.h>
 
 const int SERVO_PIN = 32;
 Servo servo;
@@ -33,7 +32,7 @@ Display display(
 Networking networking(wifi_ssid, wifi_password, "connected-kettle");
 
 Comms comms(
-  PubSubClient(networking.getClient()),
+  networking.getClient(),
   mqtt_server
   );
 
@@ -43,20 +42,15 @@ Scale scale(DOUT_PIN, SCK_PIN);
 
 void callback(const char *topic, byte *payload, unsigned int length)
 {
-  if (strcmp(topic, Comms::POST_BOILING_TOPIC) == 0)
-  {
-    display.set_backlight(false);
-    servo.attach(
-      SERVO_PIN,
-      2
-    );
-    servo.write(25);
-    delay(200);
-    servo.write(75);
-    delay(200);
-    servo.detach();
-    display.set_backlight(true);
-  }
+  display.set_backlight(false);
+  servo.attach(SERVO_PIN);
+  servo.write(25);
+  delay(200);
+  servo.write(75);
+  delay(200);
+  servo.detach();
+  comms.publishBoiling();
+  display.set_backlight(true);
 }
 
 void setup()

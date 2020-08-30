@@ -1,7 +1,7 @@
 #ifndef connected_kettle_thermistor_h
 #define connected_kettle_thermistor_h
 
-#include <Arduino.h>
+#include "Arduino.h"
 
 class Thermistor
 {

@@ -1,10 +1,10 @@
 #ifndef connected_kettle_display_h
 #define connected_kettle_display_h
 
-#include <LiquidCrystal.h>
-#include <inttypes.h>
-#include <analogWrite.h>
-#include <Wire.h>
+#include "LiquidCrystal.h"
+#include "inttypes.h"
+#include "analogWrite.h"
+#include "Wire.h"
 
 class Display
 {

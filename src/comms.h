@@ -1,22 +1,22 @@
 #ifndef connected_kettle_comms_h
 #define connected_kettle_comms_h
 
-#include <PubSubClient.h>
+#include "PubSubClient.h"
 
 class Comms
 {
 public:
-   Comms(PubSubClient pubSubClient,
+   Comms(Client& client,
          const char *mqtt_server
    );
 
    void connect();
    void loop();
    void publishAvailability(boolean available);
+   void publishBoiling();
    void publishLoad(float load);
    void publishTemperature(float load);
    void setCallback(MQTT_CALLBACK_SIGNATURE);
-   static const char *POST_BOILING_TOPIC;
 
 private:
    PubSubClient _pubSubClient;
@@ -32,9 +32,11 @@ private:
    static const char *_STATUS_AVAILABLE;
    static const char *_STATUS_UNAVAILABLE;
    static const char *_MQTT_CLIENT;
+   static const char *_POST_BOILING_TOPIC;
    static const char *_GET_TEMPERATURE_TOPIC;
    static const char *_GET_LOAD_TOPIC;
    static const char *_GET_STATUS_TOPIC;
+   static const char *_GET_BOILING_TOPIC;
 };
 
 #endif
